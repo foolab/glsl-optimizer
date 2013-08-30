@@ -16,9 +16,7 @@ else()
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -s")
 endif()
 
-file(GLOB glcpp-library_sources src/glsl/glcpp/*.c)
-file(GLOB glcpp-library_sources_remove src/glsl/glcpp/glcpp.c)
-list(REMOVE_ITEM glcpp-library_sources ${glcpp-library_sources_remove})
+file(GLOB glcpp-library_sources src/glsl/glcpp/*.c src/mesa/main/imports.c src/mesa/main/hash_table.c)
 add_library(glcpp-library ${glcpp-library_sources})
 
 file(GLOB mesa_sources src/mesa/program/*.c)
@@ -30,16 +28,7 @@ list(REMOVE_ITEM glsl_sources ${glsl_sources_remove})
 add_library(glsl_optimizer ${glsl_sources})
 target_link_libraries(glsl_optimizer glcpp-library mesa)
 
-add_executable(glsl_compiler src/glsl/main.cpp)
-target_link_libraries(glsl_compiler glsl_optimizer)
-
-file(GLOB glsl_test_sources tests/*.cpp)
-add_executable(glsl_test ${glsl_test_sources})
-target_link_libraries(glsl_test glsl_optimizer)
-
 file(GLOB glslopt_sources contrib/glslopt/*.cpp)
 add_executable(glslopt ${glslopt_sources})
 target_link_libraries(glslopt glsl_optimizer)
 
-add_executable(glcpp src/glsl/glcpp/glcpp.c)
-target_link_libraries(glcpp glsl_optimizer)
